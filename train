@@ -21,6 +21,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-o', '--outdir', required=True, help='directory for model and logging output')
 parser.add_argument('-t', '--training-subjs', required=True, help='text file with complete paths to preprocessed training subjects')
 parser.add_argument('-v', '--validation-subjs', required=True, help='text file with complete paths to preprocessed validation subjects')
+parser.add_argument('-lta', '--lta-json',  help='json file with complete paths to lta files')
 parser.add_argument('--hemi', required=True, help='hemisphere to train with (`lr` or `rh`)')
 parser.add_argument('--reg-weight', type=float, default=0.5, help='mesh regularization weight')
 parser.add_argument('--load-epoch', type=int, help='epoch number of model checkpoint to load from outdir')
@@ -45,11 +46,10 @@ topofit.utils.set_device(device)
 # get subjects
 training_subjs = topofit.utils.read_file_list(args.training_subjs)
 validation_subjs = topofit.utils.read_file_list(args.validation_subjs)
-
 # configure output paths
 os.makedirs(args.outdir, exist_ok=True)
 validation_history_file = os.path.join(args.outdir, 'history.csv')
-epoch_checkpoint_name = os.path.join(args.outdir, '{epoch:04d}.pt')
+epoch_checkpoint_name = os.path.join(args.outdir, args.hemi+'{epoch:04d}.pt')
 
 # configure model
 print('Configuring model')
@@ -88,7 +88,7 @@ for group in optimizer.param_groups:
     group['lr'] = init_learning_rate
 
 # training settings
-epochs = 4000
+epochs = 500
 steps_per_epoch = 100
 checkpoint_save_epochs = 25
 validation_epochs = 25

@@ -5,11 +5,33 @@ import torch
 
 from . import ico
 from . import utils
-
+import json
 
 # image shape used during training
 target_image_shape = (96, 144, 192)
 
+ltaTrainDict = None
+ltaValDict = None
+def getLtaPath(path):
+    global ltaTrainDict
+    global ltaValDict
+    #print(path)
+    ret = None
+    if ltaTrainDict == None:
+        with open('train.json') as tf:
+            ltaTrainDict = json.load(tf)
+    if 'subj_base/'+path in ltaTrainDict:
+        ret = ltaTrainDict['subj_base/'+path]
+        return ret
+    
+    if ltaValDict == None:
+        with open('val.json') as vf:
+            ltaValDict = json.load(vf)
+    if 'subj_base/'+path in ltaValDict:
+        ret = ltaValDict['subj_base/'+path]
+        return ret
+    if ret == None:
+        assert False
 
 def load_subject_data(subj, hemi, ground_truth=False, low_res=False): 
     """
@@ -18,9 +40,17 @@ def load_subject_data(subj, hemi, ground_truth=False, low_res=False):
     """
 
     # load bias corrected image and talairach affine
-    image = sf.load_volume(f'{subj}/mri/norm.mgz')
-    affine = sf.load_affine(f'{subj}/mri/transforms/talairach.xfm.lta').inv().convert(space='vox', target=image)
-
+    image = None
+    affine = None
+    try:
+        image = sf.load_volume(f'{subj}/mri/norm.mgz')
+        affine = sf.load_affine(f'{subj}/mri/transforms/talairach.xfm.lta').inv().convert(space='vox', target=image)
+    except:
+        subj_sub = getLtaPath(subj)
+        id = subj.strip().split('/')[-1]
+        affine = sf.load_affine(f'{subj_sub}').inv().convert(space='vox', target=image)
+        image = sf.load_volume(f'subj_base/{subj}/mri/norm.mgz')
+        
     # load the initial template surface and align to subject
     template = ico.get_initial_template(hemi)
     template.vertices = affine.transform(template.vertices)
@@ -47,7 +77,7 @@ def load_subject_data(subj, hemi, ground_truth=False, low_res=False):
 
     # ground-truths might be needed (for training)
     if ground_truth:
-        true_vertices = sf.load_mesh(f'{subj}/surf/{hemi}.white.ico.surf')
+        true_vertices = sf.load_mesh(f'whiteicosurf/{subj}.{hemi}.white.ico.surf')
         true_vertices = true_vertices.convert(space='vox', geometry=cropped_image).vertices.astype(np.float32)
         if low_res:
             true_vertices = true_vertices[ico.get_mapping(7, 6)]

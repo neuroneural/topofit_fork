@@ -1,10 +1,14 @@
-import json 
-lta_base_directory = '/home/users/washbee1/tmp/ltafiles/'#end with / 
+import json
+import os
+
+#lta_base_directory = '/home/users/washbee1/tmp/ltafiles/'#end with / 
+lta_base_directory = os.getcwd()+'/ltafiles/'
 pairings = dict()
+
 with open('train.txt','r') as trainpaths:
     for path in trainpaths.readlines():
-        pairings[path.strip()] = lta_base_directory+'train/'+path.strip().split('/')[-1]+'.talairach.xfm.lta'
-        print(path.strip(),pairings[path.strip()])
+        pairings['subj_base/'+path.strip()] = lta_base_directory+path.strip().split('/')[-1]+'.talairach.xfm.lta'
+        print('subj_base/'+path.strip(),pairings['subj_base/'+path.strip()])
 
 js = json.dumps(pairings, indent = 4)
 print(js)
@@ -14,8 +18,8 @@ with open("train.json", "w") as outfile:
 pairings = dict()
 with open('val.txt','r') as trainpaths:
     for path in trainpaths.readlines():
-        pairings[path.strip()] = lta_base_directory+'val/'+path.strip().split('/')[-1]+'.talairach.xfm.lta'
-        print(path.strip(),pairings[path.strip()])
+        pairings['subj_base/'+path.strip()] = lta_base_directory+path.strip().split('/')[-1]+'.talairach.xfm.lta'
+        print('subj_base/'+path.strip(),pairings['subj_base/'+path.strip()])
 
 js = json.dumps(pairings, indent = 4)
 print(js)
