@@ -28,49 +28,57 @@ fshome = os.environ.get('FREESURFER_HOME')
 if fshome is None:
     sf.system.fatal('FREESURFER_HOME is not set in the env, has freesurfer been sourced?')
 
-assert args.subj.strip()[-1] is not '/'
 # set SUBJECTS_DIR manually based on path to input subject
 subjects_dir = os.path.dirname(args.subj)
 os.environ['SUBJECTS_DIR'] = subjects_dir
 basename = os.path.basename(args.subj)
 
 # make sure fsaverage is accessible from the SUBJECTS_DIR
-"""if not os.path.exists(os.path.join(subjects_dir, 'fsaverage')):
-    sf.system.fatal(
-        f'fsaverage subject does not exist in the base directory `{subjects_dir}`, '
-         'so you must link it by running:\n\n'
-        f'ln -s $FREESURFER_HOME/subjects/fsaverage {subjects_dir}/fsaverage\n')
-"""
-# compute talairach.xfm.lta if it doesn't exist
+#if not os.path.exists(os.path.join(subjects_dir, 'fsaverage')):
+#    sf.system.fatal(
+#        f'fsaverage subject does not exist in the base directory `{subjects_dir}`, '
+#         'so you must link it by running:\n\n'
+#        f'ln -s $FREESURFER_HOME/subjects/fsaverage {subjects_dir}/fsaverage\n')
 
-if not os.path.isfile(f'{args.subj}/mri/transforms/talairach.xfm.lta'):
-    id = args.subj.strip().split('/')[-1]
-    if os.path.isdir('ltafiles'):
-        cmd = f'lta_convert --src {args.subj}/mri/orig.mgz ' \
+# compute talairach.xfm.lta if it doesn't exist
+if os.path.isdir('ltafiles'):
+    id = args.subj.split('/')[-1]
+    cmd = f'lta_convert --src {args.subj}/mri/orig.mgz ' \
             f'--trg {fshome}/average/mni305.cor.mgz --inxfm {args.subj}/mri/transforms/talairach.xfm ' \
-            f'--outlta ltafiles/'+id+'.talairach.xfm.lta --subject fsaverage --ltavox2vox'
-    else:
+            f'--outlta ltafiles/{id}.talairach.xfm.lta --subject fsaverage --ltavox2vox'
+    if sf.system.run(cmd) != 0:
+        sf.system.fatal('could not run lta_convert command')
+elif not os.path.isfile(f'{args.subj}/mri/transforms/talairach.xfm.lta'):
+    try:
         cmd = f'lta_convert --src {args.subj}/mri/orig.mgz ' \
             f'--trg {fshome}/average/mni305.cor.mgz --inxfm {args.subj}/mri/transforms/talairach.xfm ' \
             f'--outlta {args.subj}/mri/transforms/talairach.xfm.lta --subject fsaverage --ltavox2vox'
-    
-    if sf.system.run(cmd) != 0:
-        sf.system.fatal('could not run lta_convert command')
-
+        if sf.system.run(cmd) != 0:
+            sf.system.fatal('could not run lta_convert command')
+    except:
+        print('you may want to create folder ltafiles in project base directory if you have read only access to your data')
 # cycle through hemispheres
-for i, hemi in enumerate(('lh', 'rh')):
-    id = args.subj.strip().split('/')[-1]
-    
-    # run the mesh resampling
-    if os.path.isdir('whiteicosurf'):
-        cmd = f'mri_surf2surf --mapmethod nnf --s {basename} --hemi {hemi} --sval-xyz white ' \
-          f'--trgsubject fsaverage --tval whiteicosurf/'+id+f'.{hemi}.white.ico.surf ' \
-          f'--tval-xyz {args.subj}/mri/norm.mgz'
-    else:
-        cmd = f'mri_surf2surf --mapmethod nnf --s {basename} --hemi {hemi} --sval-xyz white ' \
-          f'--trgsubject fsaverage --tval {args.subj}/surf/{hemi}.white.ico.surf ' \
-          f'--tval-xyz {args.subj}/mri/norm.mgz'
-    if sf.system.run(cmd) != 0:
-        sf.system.fatal('could not run mri_surf2surf command')
 
+for i, hemi in enumerate(('lh', 'rh')):
+    if os.path.isdir('whiteicosurf'):#this path is for if you don't have write access to your data. it is messy, but will work. so shh. no duplicate ids.
+        s = ['..' for i in range(len(args.subj.split('/'))-2)]
+        s = '/'.join(s)
+        id = args.subj.split('/')[-1]
+        print()
+        cwd = os.getcwd()
+        cmd = f'mri_surf2surf --mapmethod nnf --s {basename} --hemi {hemi} --sval-xyz white ' \
+          f'--trgsubject {s}$FREESURFER_HOME/subjects/fsaverage --tval {cwd}/whiteicosurf/{id}.{hemi}.white.ico.surf ' \
+          f'--tval-xyz {args.subj}/mri/norm.mgz'
+        if sf.system.run(cmd) != 0:
+            sf.system.fatal('could not run mri_surf2surf command')
+    else:    
+        try:
+            # run the mesh resampling
+            cmd = f'mri_surf2surf --mapmethod nnf --s {basename} --hemi {hemi} --sval-xyz white ' \
+                f'--trgsubject fsaverage --tval {args.subj}/surf/{hemi}.white.ico.surf ' \
+                f'--tval-xyz {args.subj}/mri/norm.mgz'
+            if sf.system.run(cmd) != 0:
+                sf.system.fatal('could not run mri_surf2surf command')
+        except:
+            print('you may need to create directory whiteicosurf in your base directory if you have read only access to your data')
 print('\nTopoFit preprocessing complete!')
