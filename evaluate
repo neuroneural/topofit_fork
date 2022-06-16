@@ -56,7 +56,7 @@ model.train(mode=False)
 
 # start training loop
 for subj in args.subjs:
-    print(subj)
+    
     # load subject data
     data = topofit.io.load_subject_data(subj, args.hemi)
 
@@ -73,7 +73,11 @@ for subj in args.subjs:
     surf = surf.convert(geometry=data['input_geometry'])
 
     # write surface
-    #filename = os.path.join(subj, 'surf', f'{args.hemi}.white.{args.suffix}')
-    filename = f'outsurf/{subj}.white.{args.suffix}'
-    surf.save(filename)
+    filename = os.path.join(subj, 'surf', f'{args.hemi}.white.{args.suffix}')
+    if os.access(os.path.join(subj,'surf'), os.W_OK):
+        surf.save(filename)
+    else:
+        id = subj.split('/')[-1]
+        filename = f'outdir/{id}.{args.hemi}.white.{args.suffix}'
+        surf.save(filename)
     print(f'Saved white-matter surface to {filename}')
