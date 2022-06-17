@@ -19,16 +19,17 @@ def load_subject_data(subj, hemi, ground_truth=False, low_res=False):
 
     # load bias corrected image and talairach affine
     image = sf.load_volume(f'{subj}/mri/norm.mgz')
-    try:
-        id = subj.split('/')[-1]
-        if os.path.isdir('ltafiles') and os.path.exists(f'ltafiles/{id}.talairach.xfm.lta'):
-            affine = sf.load_affine(f'ltafiles/{id}.talairach.xfm.lta').inv().convert(space='vox', target=image)
-        else:
-            affine = sf.load_affine(f'{subj}/mri/transforms/talairach.xfm.lta').inv().convert(space='vox', target=image)
-    except:
-        print('fix 1: ensure exists: {subj}/mri/transforms/talairach.xfm.lta')
-        print('fix 2: create ltafiles folder in basedirectory and run preprocess to create those files with rod flag')
-        raise
+    #try:
+    
+    id = subj.split('/')[-1]
+    if os.path.isdir('ltafiles') and os.path.exists(f'ltafiles/{id}.talairach.xfm.lta'):
+        affine = sf.load_affine(f'ltafiles/{id}.talairach.xfm.lta').inv().convert(space='vox', target=image)
+    else:
+        affine = sf.load_affine(f'{subj}/mri/transforms/talairach.xfm.lta').inv().convert(space='vox', target=image)
+    #except:
+    #    print('fix 1: ensure exists: {subj}/mri/transforms/talairach.xfm.lta')
+    #    print('fix 2: create ltafiles folder in basedirectory and run preprocess to create those files with rod flag')
+    #    raise
     # load the initial template surface and align to subject
     template = ico.get_initial_template(hemi)
     template.vertices = affine.transform(template.vertices)
@@ -55,16 +56,16 @@ def load_subject_data(subj, hemi, ground_truth=False, low_res=False):
 
     # ground-truths might be needed (for training)
     if ground_truth:
-        try:
-            id = subj.split('/')[-1]
-            if os.path.isdir('whiteicosurf') and os.path.exists(f'whiteicosurf/{id}.{hemi}.white.ico.surf'):#path for read only access to data
-                true_vertices = sf.load_mesh(f'whiteicosurf/{id}.{hemi}.white.ico.surf')
-            else:
-                true_vertices = sf.load_mesh(f'{subj}/surf/{hemi}.white.ico.surf')
-        except:
-            print('fix 1: ensure exists: {subj}/mri/transforms/talairach.xfm.lta')
-            print('fix 2: create whiteicosurf folder in basedirectory and run preprocess to create those files with rod flag')
-        raise        
+        #try:
+        id = subj.split('/')[-1]
+        if os.path.isdir('whiteicosurf') and os.path.exists(f'whiteicosurf/{id}.{hemi}.white.ico.surf'):#path for read only access to data
+            true_vertices = sf.load_mesh(f'whiteicosurf/{id}.{hemi}.white.ico.surf')
+        else:
+            true_vertices = sf.load_mesh(f'{subj}/surf/{hemi}.white.ico.surf')
+        #except:
+        #    print('fix 1: ensure exists: {subj}/mri/transforms/talairach.xfm.lta')
+        #    print('fix 2: create whiteicosurf folder in basedirectory and run preprocess to create those files with rod flag')
+        #raise        
         true_vertices = true_vertices.convert(space='vox', geometry=cropped_image).vertices.astype(np.float32)
         if low_res:
             true_vertices = true_vertices[ico.get_mapping(7, 6)]
