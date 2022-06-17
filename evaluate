@@ -24,6 +24,7 @@ parser.add_argument('--model', required=True, help='model file (.pt) to load')
 parser.add_argument('--suffix', default='topofit', help='custom ')
 parser.add_argument('--gpu', default='0', help='GPU device ID (default is 0')
 parser.add_argument('--cpu', action='store_true', help='use CPU instead of GPU')
+parser.add_argument('--outdir', help='path to store surfaces')
 args = parser.parse_args()
 
 # sanity check on inputs
@@ -74,10 +75,10 @@ for subj in args.subjs:
 
     # write surface
     filename = os.path.join(subj, 'surf', f'{args.hemi}.white.{args.suffix}')
-    if os.access(os.path.join(subj,'surf'), os.W_OK):
+    if os.access(os.path.join(subj,'surf'), os.W_OK) and args.outdir == None:
         surf.save(filename)
     else:
         id = subj.split('/')[-1]
-        filename = f'outdir/{id}.{args.hemi}.white.{args.suffix}'
+        filename = f'{args.outdir}/{id}.{args.hemi}.white.{args.suffix}'
         surf.save(filename)
     print(f'Saved white-matter surface to {filename}')
