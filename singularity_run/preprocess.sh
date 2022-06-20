@@ -5,4 +5,5 @@
 #eg. /topofit/train ... 
 #eg. /topofit/preprocess ...
 #the following example requires --bind yourtopofitclone:/topofit/
-/topofit/train -o /topofit/output -t /topofit/train.txt -v /topofit/val.txt --hemi lh
+. /home/users/washbee1/local/freesurfer/SetUpFreeSurfer.sh
+/topofit/preprocess /data/users2/washbee/hcp-plis-subj/358144
