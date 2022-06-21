@@ -48,6 +48,6 @@ Once a model has been trained, it can be evaluated on any set of recon-all subje
 This will save the predicted FreeSurfer-formatted surface as `lh.white.topofit` in the subject's `surf` subdirectory.
 
 # Docker and singularity
-A Dockerfile recipe exists in the docker folder of this repository build commands for docker and singularity exist in the readme in that folder. A more specific readme exists in that directory.
+A Dockerfile recipe exists in the docker folder of this repository. Build commands for docker and singularity exist in the readme in the docker folder. A more specific readme exists in the docker directory.
 
-Several singularity example run scripts exist in the singularity_run folder of this repository. A more specific readme exists in that folder as well. 
+Several singularity example run scripts exist in the singularity_run folder of this repository. A more specific readme exists in the singularity_run folder as well. 
