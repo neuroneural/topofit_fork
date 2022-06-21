@@ -22,12 +22,21 @@ posterity.
 
 # Commands: 
     git clone -b v1.0 https://github.com/neuroneural/topofit.git
+
 then 
 
-##Download file requirement
-The guided (or neighborhood-based) training loss requires a 500MB neighorhood mapping file that is too large to store on GitHub. In order to train a model, you must download neighorhoods.npz and move it to the topofit subdirectory of this repository.
+## Download file requirement (from main topofit wiki)
 
+The guided (or neighborhood-based) training loss requires a 500MB neighorhood mapping file that is too large to store on GitHub. In order to train a model, you must download [neighorhoods.npz](https://surfer.nmr.mgh.harvard.edu/ftp/data/topofit/neighborhoods.npz) and move it to the `topofit` subdirectory of this repository.
 
+this can be done on a dev machine (dev machines have wget) with the following command:
+
+        wget https://surfer.nmr.mgh.harvard.edu/ftp/data/topofit/neighborhoods.npz
+then 
+
+        mv neighborhoods.npz ./topofit/topofit/
+
+## Run singularity commands 
 
     cd topofit 
 
@@ -55,6 +64,9 @@ https://docs.sylabs.io/guides/3.0/user-guide/bind_paths_and_mounts.html
 ## --nv
 The --nv command enables nvidia gpu support. The --nv command is not necessary for preprocessing. 
 It's possible the /home directory doesnt' need to be mounted. One may potentially remove that from the above command. 
+
+## Current location of the sif file
+Until we have a singularity hub, the topofit sif file will be located at /data/users2/washbee/containers/topofitV1_release.sif
 
 # Most importantly!
   each one of these shell scripts is examples of how to run the singularity container. Given the needs of whoever runs these containers will be quite unique, it is impossible
