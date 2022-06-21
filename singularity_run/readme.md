@@ -32,8 +32,11 @@ singularity exec --nv --bind /data:/data/,/home:/home/,.:/topofit/ /data/users2/
 singularity exec --bind /data:/data/,/home:/home/,.:/topofit/ /data/users2/washbee/containers/topofitV1_release.sif /topofit/singularity_run/preprocess.sh
 
 exec runs the .sh scripts at the end of the command, which are located at the --bind directory (/topofit/) /topofit/singularity_run/...
-when using the bind command, the format is <hostdirectory>:<containerMountDirectory>, so the above command assumes you are running these commands from within the cloned singularity codebase 
+when using the bind command, the format is "hostdirectory":"containerMountDirectory", so the above command assumes you are running these commands from within the cloned singularity codebase 
 you may bind more directories, seperated by commas. 
+
+More on --bind:
+https://docs.sylabs.io/guides/3.0/user-guide/bind_paths_and_mounts.html
 
 The --nv command enables nvidia gpu support. The --nv command is not necessary for preprocessing. 
 It's possible the /home directory doesnt' need to be mounted. One may potentially remove that from the above command. 
