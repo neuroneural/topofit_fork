@@ -24,6 +24,11 @@ posterity.
     git clone -b v1.0 https://github.com/neuroneural/topofit.git
 then 
 
+##Download file requirement
+The guided (or neighborhood-based) training loss requires a 500MB neighorhood mapping file that is too large to store on GitHub. In order to train a model, you must download neighorhoods.npz and move it to the topofit subdirectory of this repository.
+
+
+
     cd topofit 
 
 then run the following commands for each script:
