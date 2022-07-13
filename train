@@ -48,8 +48,9 @@ validation_subjs = topofit.utils.read_file_list(args.validation_subjs)
 
 # configure output paths
 os.makedirs(args.outdir, exist_ok=True)
-validation_history_file = os.path.join(args.outdir, 'history.csv')
-epoch_checkpoint_name = os.path.join(args.outdir, '{epoch:04d}.pt')
+validation_history_file = os.path.join(args.outdir, '{}.history.csv'.format(args.hemi))
+epoch_checkpoint_name = os.path.join(args.outdir,'{}.'.format(args.hemi))
+epoch_checkpoint_name += '{epoch:04d}.pt'
 
 # configure model
 print('Configuring model')
