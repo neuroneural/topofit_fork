@@ -1,23 +1,24 @@
 #!/bin/bash
 #SBATCH -n 1
-#SBATCH -c 10
+#SBATCH -c 4
 #SBATCH --mem=30g
 #SBATCH -p qTRDGPUH
-#SBATCH --gres=gpu:v100:1
-#SBATCH --nodelist=trendsdgx003.rs.gsu.edu 
+#SBATCH --gres=gpu:V100:1
 #SBATCH -t 3-00:00
 #SBATCH -J topofitr
 #SBATCH -e /data/users2/washbee/topofit/jobs/error%A.err
 #SBATCH -o /data/users2/washbee/topofit/jobs/out%A.out
-#SBATCH -A PSYC0002
+#SBATCH -A psy53c17
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=washbee1@student.gsu.edu
 #SBATCH --oversubscribe
+#SBATCH --exclude=arctrdgn002
+
 
 sleep 5s
 
-
-singularity exec --nv --bind /data:/data/,/home:/home/,$HOME/projects/topofit:/topofit/,/data/users2/washbee/hcp-plis-subj/:/subj /data/users2/washbee/containers/topofitV1_release.sif /topofit/singularity_run/train.sh rh &
+module load singularity/3.10.2
+singularity exec --nv --bind /data:/data/,/home:/home/,$HOME/projects/topofit:/topofit/,/data/users2/washbee/hcp-plis-subj/:/subj /data/users2/washbee/containers/speedrun/topofit_sr.sif /topofit/singularity_run/train.sh rh &
 
 wait
 
