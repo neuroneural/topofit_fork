@@ -5,5 +5,12 @@
 #eg. /topofit/train ... 
 #eg. /topofit/preprocess ...
 #the following example requires --bind yourtopofitclone:/topofit/
-. /home/users/washbee1/local/freesurfer/SetUpFreeSurfer.sh
-/topofit/preprocess /data/users2/washbee/hcp-plis-subj/358144
+. $FREESURFER_HOME/SetUpFreeSurfer.sh
+
+readarray -t a < /topofit/singularity/subjs.txt
+#echo ${a[0]}
+read -a pmdata <<< "${a[$1]}"
+echo "pmdata" $pmdata ${pmdata[0]}  
+
+/topofit/preprocess /data/users2/washbee/speedrun/topofit-data/${pmdata[0]}
+
