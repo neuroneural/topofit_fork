@@ -83,6 +83,5 @@ dependencies:
     - scikit-learn==1.0.2
     - scipy==1.7.3
     - stl==0.0.3
-    - surfa==0.0.8
     - threadpoolctl==3.1.0
 prefix: /data/users2/washbee/anaconda3/envs/topofit
