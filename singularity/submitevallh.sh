@@ -2,8 +2,8 @@
 #SBATCH -n 1
 #SBATCH -c 4
 #SBATCH --mem=30g
-#SBATCH -p qTRDGPUH
-#SBATCH --gres=gpu:V100:1
+#SBATCH -p qTRDGPU
+#SBATCH --gres=gpu:RTX:1
 #SBATCH -t 0-02:00
 #SBATCH -J topofitl
 #SBATCH -e jobs/error%A.err
@@ -19,8 +19,10 @@ sleep 5s
 
 module load singularity/3.10.2
 #singularity exec --nv --bind /data,/data/users2/washbee/speedrun/topofit:/topofit/, /data/users2/washbee/containers/speedrun/topofit_bm_sandbox/ /topofit/singularity/evaluatelh.sh &
-singularity exec --nv --bind /data,/data/users2/washbee/speedrun/topofit:/topofit/, /data/users2/washbee/containers/harsha/topofit_harsha.sif /topofit/singularity/evaluatelh.sh 
+#singularity exec --nv --bind /data,/data/users2/washbee/speedrun/topofit_fork:/topofit/, /data/users2/washbee/containers/harsha/topofit_harsha.sif /topofit/singularity/evaluatelh.sh 
+#/data/users2/washbee/containers/harsha/harshasandbox
 #../../../containers/harsha/topofit_harsha.sif
+singularity exec --nv --bind /data,/data/users2/washbee/speedrun/topofit_fork:/topofit/, /data/users2/washbee/containers/harsha/topofit_harsha.sif /topofit/singularity/evaluatelh.sh 
 
 wait
 

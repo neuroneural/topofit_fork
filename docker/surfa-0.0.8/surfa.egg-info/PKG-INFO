@@ -1,0 +1,24 @@
+Metadata-Version: 2.1
+Name: surfa
+Version: 0.0.8
+Summary: Utilities for medical image processing and surface reconstruction.
+Home-page: https://github.com/freesurfer/surfa
+Author: Andrew Hoopes
+Author-email: freesurfer@nmr.mgh.harvard.edu
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Natural Language :: English
+Classifier: Topic :: Scientific/Engineering
+Requires-Python: >=3.5
+
+Surfa is a collection of Python (3.5+) utilities for medical image
+analysis and mesh-based surface processing. It provides tools that operate on 3D image
+arrays and triangular meshes with consideration of their representation in a world (or
+scanner) coordinate system. While broad in scope, surfa is developed with particular
+emphasis on neuroimaging applications, as it is an extension of the FreeSurfer brain
+analysis software suite.
+
+

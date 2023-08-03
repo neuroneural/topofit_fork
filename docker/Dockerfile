@@ -32,10 +32,12 @@ chmod +x ~/miniconda.sh && \
 
 WORKDIR /app
 COPY environment.yml .
+COPY surfa-0.0.8 /app/surfa-0.0.8 
 RUN conda env create -f environment.yml
 SHELL ["conda", "run", "-n", "topofit", "/bin/bash", "-c"]
-RUN pip install torch-scatter -f https://data.pyg.org/whl/torch-1.11.0+cu113.html
-RUN pip install surfa
+WORKDIR /app/surfa-0.0.8/
+RUN pip install -v -e .
+RUN conda install pytorch-scatter -c pyg
 RUN apt-get clean
 RUN pip cache purge
 RUN conda clean -a
